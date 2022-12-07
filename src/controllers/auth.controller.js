@@ -3,6 +3,10 @@ const { response } = require('express')
 
 //CallBack para Crear un nuevo usuario.
 const createUser = (req, res = response) => {
+    const { email, name, password } = req.body
+
+    console.log(email, name, password);
+
     return res.json({
         ok: "",
         msg: "new user"

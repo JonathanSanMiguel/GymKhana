@@ -1,8 +1,16 @@
 const express = require('express')
+const cors = require('cors')
+const morgan = require('morgan')
 
 const app = express()
 
-//Rutas
+//ModdleWares
+app.use(morgan('dev'))
+//Cors
+app.use(cors())
+//lectuar y parseo del body.
+app.use(express.json())
+//EndPiont 
 app.use('/gymkhana/auth', require('./src/routes/auth.routes'))
 
 //CallBack para enviar un mensaje cuando inicie el servidor
