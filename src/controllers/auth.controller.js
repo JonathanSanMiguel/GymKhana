@@ -15,6 +15,10 @@ const createUser = (req, res = response) => {
 
 //CallBack para iniciar sesion.
 const LogIn = (req, res = response) => {
+    const { email, password } = req.body
+
+    console.log(email, password);
+
     return res.json({
         ok: "",
         msg: "hola soy el login"
