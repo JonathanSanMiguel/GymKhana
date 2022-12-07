@@ -1,9 +1,13 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const { dbConection } = require('./src/Database/config')
 require('dotenv').config() 
 
 const app = express()
+
+//Database
+dbConection()
 
 //Directorio publico
 app.use(express.static('src/public'))
