@@ -1,8 +1,12 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+require('dotenv').config() 
 
 const app = express()
+
+//Directorio publico
+app.use(express.static('src/public'))
 
 //ModdleWares
 app.use(morgan('dev'))
@@ -14,6 +18,6 @@ app.use(express.json())
 app.use('/gymkhana/auth', require('./src/routes/auth.routes'))
 
 //CallBack para enviar un mensaje cuando inicie el servidor
-app.listen(4000, () => {
-    console.log(`Servidor en el puerto: ${4000}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor en el puerto: ${process.env.PORT}`)
 })
