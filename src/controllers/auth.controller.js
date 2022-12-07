@@ -1,16 +1,48 @@
 //Sirve para igualar el res a response y permita el intellisense
 const { response } = require('express');
+const Usuario = require('../Models/Usuario');
 
 //CallBack para Crear un nuevo usuario.
-const createUser = (req, res = response) => {
-
+const createUser = async(req, res = response) => {
+    //Parametros para el SignIn.
     const { name, email, password } = req.body
-    console.log(name, email, password);
 
-    return res.json({
-        ok: "",
-        msg: "Registro exitoso"
-    })//return
+    try {
+        //Verificacion de email.
+        let usuario = await Usuario.findOne({email})
+        //Si el email existe, termina el proceso. 
+        if (usuario) {
+            return res.status(400).json({
+                ok: false,
+                msg: "Email ya registrado"
+            })
+        }
+
+        //Creacion del usuario con el modelo
+        //Nueva instancia del usuario.
+        const dbUser = new Usuario(req.body)
+
+        //Hash al password.
+
+        //Generar el JsonWebToken.
+
+        //Crear usuario en la Batabase.
+        await dbUser.save()
+        
+        //res successful.
+        return res.status(204).json({
+            ok: true,
+            msg: "Registro Exitoso",
+            uid: dbUser.id
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: "Something was Wrong..."
+        })//return
+    }//catch
 }//createUser
 
 
