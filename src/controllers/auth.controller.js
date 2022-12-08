@@ -1,7 +1,8 @@
 //Sirve para igualar el res a response y permita el intellisense
-const { response } = require('express');
-const Usuario = require('../Models/Usuario');
-const bcrypt = require('bcryptjs');
+const { response } = require('express')
+const Usuario = require('../Models/Usuario')
+const bcrypt = require('bcryptjs')
+const { generarJWT } = require('../helpers/jsonWebToken')
 
 //CallBack para Crear un nuevo usuario.
 const createUser = async(req, res = response) => {
@@ -28,6 +29,7 @@ const createUser = async(req, res = response) => {
         dbUser.password = bcrypt.hashSync(password, salt)
 
         //Generar el JsonWebToken.
+        const JWtoken = await generarJWT(dbUser.id, name)
 
         //Crear usuario en la Batabase.
         await dbUser.save()
@@ -36,9 +38,11 @@ const createUser = async(req, res = response) => {
         return res.status(201).json({
             ok: true,
             msg: "Registro Exitoso",
-            uid: dbUser.id
+            uid: dbUser.id,
+            JWtoken
         });
-
+        
+      //res en caso de error
     } catch (error) {
         console.log(error);
         return res.status(500).json({
