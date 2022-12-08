@@ -1,6 +1,7 @@
 //Sirve para igualar el res a response y permita el intellisense
 const { response } = require('express');
 const Usuario = require('../Models/Usuario');
+const bcrypt = require('bcryptjs');
 
 //CallBack para Crear un nuevo usuario.
 const createUser = async(req, res = response) => {
@@ -23,6 +24,8 @@ const createUser = async(req, res = response) => {
         const dbUser = new Usuario(req.body)
 
         //Hash al password.
+        const salt = bcrypt.genSaltSync(15)
+        dbUser.password = bcrypt.hashSync(password, salt)
 
         //Generar el JsonWebToken.
 
@@ -30,7 +33,7 @@ const createUser = async(req, res = response) => {
         await dbUser.save()
         
         //res successful.
-        return res.status(204).json({
+        return res.status(201).json({
             ok: true,
             msg: "Registro Exitoso",
             uid: dbUser.id
