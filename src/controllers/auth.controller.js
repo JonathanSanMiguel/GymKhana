@@ -1,5 +1,5 @@
 //Sirve para igualar el res a response y permita el intellisense
-const { response } = require('express')
+const { response, json } = require('express')
 const Usuario = require('../Models/Usuario')
 const bcrypt = require('bcryptjs')
 const { generarJWT } = require('../helpers/jsonWebToken')
@@ -41,7 +41,7 @@ const createUser = async(req, res = response) => {
             uid: dbUser.id,
             JWtoken
         });
-        
+
       //res en caso de error
     } catch (error) {
         console.log(error);
@@ -54,23 +54,54 @@ const createUser = async(req, res = response) => {
 
 
 //CallBack para iniciar sesion.
-const LogIn = (req, res = response) => {
+const LogIn = async(req, res = response) => {
     
     const { email, password } = req.body
-    console.log(email, password);
 
-    return res.json({
-        ok: "",
-        msg: "hola soy el login"
-    })//return
+    try {
+       const dbUser = await Usuario.findOne({email})
+       //Validar si los datos son validos
+       if(!dbUser){
+        return res.status(400).json({
+            msg: "Datos no validos"
+        })
+       }
+       //Confirmar si el password hace match
+       const validPassword = bcrypt.compareSync(password, dbUser.password)
+       if (!validPassword) {
+            return res.status(400).json({
+                msg: "Datos no validos"
+            })
+       }
+
+       //Generar el JsonWebToken
+       const JWtoken = await generarJWT(dbUser.id, dbUser.name)
+
+       //res del servicio
+       return res.json({
+            msg: "Login Success",
+            JWtoken
+       })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            msg: "Something wrong Goes..."
+        })
+    }
 }//createUser
 
 
 //CallBack para validar el JsonToken.
-const renewToken = (req, res = response) => {
+const renewToken = async(req, res = response) => {
+
+    const {uid, name} = req
+
+    const JWtoken = await generarJWT(uid, name)
+
     return res.json({
-        ok: "",
-        msg: "renew"
+        msg: "renew",
+        JWtoken
     })//return
 }//renewToken
 
