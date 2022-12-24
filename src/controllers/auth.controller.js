@@ -7,7 +7,7 @@ const { generarJWT } = require('../helpers/jsonWebToken')
 //CallBack para Crear un nuevo usuario.
 const createUser = async(req, res = response) => {
     //Parametros para el SignIn.
-    const { name, email, password } = req.body
+    const { nombre, apellido, email, password } = req.body
 
     try {
         //Verificacion de email.
@@ -19,7 +19,6 @@ const createUser = async(req, res = response) => {
                 msg: "Email ya registrado"
             })
         }
-
         //Creacion del usuario con el modelo
         //Nueva instancia del usuario.
         const dbUser = new Usuario(req.body)
@@ -29,7 +28,7 @@ const createUser = async(req, res = response) => {
         dbUser.password = bcrypt.hashSync(password, salt)
 
         //Generar el JsonWebToken.
-        const JWtoken = await generarJWT(dbUser.id, name)
+        const JWtoken = await generarJWT(dbUser.id, nombre)
 
         //Crear usuario en la Batabase.
         await dbUser.save()
@@ -80,6 +79,7 @@ const LogIn = async(req, res = response) => {
        //res del servicio
        return res.json({
             msg: "Login Success",
+            uid: dbUser.id,
             JWtoken
        })
 

@@ -1,7 +1,11 @@
 const { Schema, model } = require("mongoose")
 
 const UsuarioSchema = Schema({
-    name: {
+    nombre: {
+        type: String,
+        require: true
+    },
+    apellido: {
         type: String,
         require: true
     },
@@ -17,4 +21,4 @@ const UsuarioSchema = Schema({
 })
 
 //El model cambia a prural al momento del registo
-module.exports = model('Usuarios', UsuarioSchema)
+module.exports = model('Usuario', UsuarioSchema)

@@ -9,9 +9,10 @@ const router = Router()
 //Rutas para los controllers
 //Crear un nuevo usuario
 router.post('/newUser', [
-    check('name', 'Ingresa un nombre').notEmpty(),
-    check('email', 'Ingrese un email').isEmail(),
-    check('password', 'Ingrese una contrsena').isAlphanumeric(),
+    check('nombre', 'Ingresa su Nombre').notEmpty(),
+    check('apellido', 'Ingrese su Apellido').notEmpty(),
+    check('email', 'Ingrese su Email').isEmail(),
+    check('password', 'Ingrese su Contrsena').isAlphanumeric(),
     validarCampos
 ], createUser)
 
