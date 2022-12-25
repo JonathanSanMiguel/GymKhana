@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const colors = require('colors')
 const { dbConection } = require('./src/Database/config')
 require('dotenv').config() 
 
@@ -16,12 +17,12 @@ app.use(express.static('src/public'))
 app.use(morgan('dev'))
 //Cors
 app.use(cors())
-//lectuar y parseo del body.
+//lectura y parseo del body.
 app.use(express.json())
 //EndPiont 
 app.use('/gymkhana/auth', require('./src/routes/auth.routes'))
 
 //CallBack para enviar un mensaje cuando inicie el servidor
 app.listen(process.env.PORT, () => {
-    console.log(`Servidor en el puerto: ${process.env.PORT}`)
+    console.log(colors.rainbow(`Servidor Corriendo En El Puerto: ${process.env.PORT}`))
 })
