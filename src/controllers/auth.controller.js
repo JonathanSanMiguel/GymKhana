@@ -62,14 +62,16 @@ const LogIn = async(req, res = response) => {
        //Validar si los datos son validos
        if(!dbUser){
         return res.status(400).json({
-            msg: "Datos no validos"
+            ok: "false",
+            msg: "Correo no valido"
         })
        }
        //Confirmar si el password hace match
        const validPassword = bcrypt.compareSync(password, dbUser.password)
        if (!validPassword) {
             return res.status(400).json({
-                msg: "Datos no validos"
+                ok: "false",
+                msg: "Password no valida"
             })
        }
 
@@ -78,14 +80,18 @@ const LogIn = async(req, res = response) => {
 
        //res del servicio
        return res.json({
+            ok: "true",
             msg: "Login Success",
             uid: dbUser.id,
+            nombre: dbUser.nombre,
+            apellido: dbUser.apellido,
             JWtoken
        })
 
     } catch (error) {
         console.log(error);
         return res.status(500).json({
+            ok: "false",
             msg: "Something wrong Goes..."
         })
     }
@@ -100,10 +106,12 @@ const renewToken = async(req, res = response) => {
     const JWtoken = await generarJWT(uid, name)
 
     return res.json({
+        ok: "true",
         msg: "renew",
         JWtoken
     })//return
 }//renewToken
+
 
 //Exportar los CallBacks.
 module.exports = {
