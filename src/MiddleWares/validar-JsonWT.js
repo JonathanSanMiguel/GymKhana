@@ -2,11 +2,13 @@ const { response } = require("express")
 const jwt = require("jsonwebtoken")
 
 const validarJWT = (req, res = response, next) => {
-    const JWtoken = req.header('x-token')
+
+    const JWtoken = req.header('X-Token')
 
     if (!JWtoken) {
         return res.status(401).json({
-            msg: "error en el token"
+            ok: false,
+            msg: "Error en el JsonWebToken"
         })
     }
 
@@ -20,6 +22,7 @@ const validarJWT = (req, res = response, next) => {
         
     } catch (error) {
         return res.status(401).json({
+            ok: false,
             msg: "Token no valido"
         })
     }
