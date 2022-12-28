@@ -76,7 +76,7 @@ const LogIn = async(req, res = response) => {
        }
 
        //Generar el JsonWebToken
-       const JWtoken = await generarJWT(dbUser.id, dbUser.name)
+       const JWtoken = await generarJWT(dbUser.id, dbUser.nombre, dbUser.apellido)
 
        //res del servicio
        return res.json({
@@ -101,13 +101,16 @@ const LogIn = async(req, res = response) => {
 //CallBack para validar el JsonToken.
 const renewToken = async(req, res = response) => {
 
-    const {uid, name} = req
+    const { uid, nombre, apellido } = req
 
-    const JWtoken = await generarJWT(uid, name)
+    const JWtoken = await generarJWT(uid, nombre, apellido)
 
     return res.json({
         ok: "true",
-        msg: "renew",
+        msg: "renewed",
+        uid,
+        nombre,
+        apellido,
         JWtoken
     })//return
 }//renewToken
