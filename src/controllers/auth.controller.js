@@ -12,6 +12,7 @@ const createUser = async(req, res = response) => {
     try {
         //Verificacion de email.
         let usuario = await Usuario.findOne({email})
+
         //Si el email existe, termina el proceso. 
         if (usuario) {
             return res.status(400).json({
@@ -19,6 +20,7 @@ const createUser = async(req, res = response) => {
                 msg: "Email ya registrado"
             })
         }
+
         //Creacion del usuario con el modelo
         //Nueva instancia del usuario.
         const dbUser = new Usuario(req.body)
@@ -28,7 +30,7 @@ const createUser = async(req, res = response) => {
         dbUser.password = bcrypt.hashSync(password, salt)
 
         //Generar el JsonWebToken.
-        const JWtoken = await generarJWT(dbUser.id, nombre)
+        const JWtoken = await generarJWT(dbUser.id, dbUser.email, dbUser.nombre, dbUser.apellido)
 
         //Crear usuario en la Batabase.
         await dbUser.save()
@@ -38,6 +40,7 @@ const createUser = async(req, res = response) => {
             ok: true,
             msg: "Registro Exitoso",
             uid: dbUser.id,
+            email: dbUser.email,
             nombre: dbUser.nombre,
             apellido: dbUser.apellido,
             JWtoken
@@ -45,7 +48,6 @@ const createUser = async(req, res = response) => {
 
       //res en caso de error
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             ok: false,
             msg: "Something was Wrong..."
@@ -61,6 +63,7 @@ const LogIn = async(req, res = response) => {
 
     try {
        const dbUser = await Usuario.findOne({email})
+
        //Validar si los datos son validos
        if(!dbUser){
         return res.status(400).json({
@@ -68,6 +71,7 @@ const LogIn = async(req, res = response) => {
             msg: "Correo no valido"
         })
        }
+
        //Confirmar si el password hace match
        const validPassword = bcrypt.compareSync(password, dbUser.password)
        if (!validPassword) {
@@ -78,20 +82,20 @@ const LogIn = async(req, res = response) => {
        }
 
        //Generar el JsonWebToken
-       const JWtoken = await generarJWT(dbUser.id, dbUser.nombre, dbUser.apellido)
+       const JWtoken = await generarJWT(dbUser.id, dbUser.email, dbUser.nombre, dbUser.apellido)
 
        //res del servicio
        return res.json({
             ok: "true",
             msg: "Login Success",
             uid: dbUser.id,
+            email: dbUser.email,
             nombre: dbUser.nombre,
             apellido: dbUser.apellido,
             JWtoken
        })
 
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             ok: "false",
             msg: "Something wrong Goes..."
@@ -103,14 +107,16 @@ const LogIn = async(req, res = response) => {
 //CallBack para validar el JsonToken.
 const renewToken = async(req, res = response) => {
 
-    const { uid, nombre, apellido } = req
+    const { uid, email, nombre, apellido } = req
 
-    const JWtoken = await generarJWT(uid, nombre, apellido)
+    //Generar el JsonWebToken
+    const JWtoken = await generarJWT(uid, email, nombre, apellido)
 
     return res.json({
         ok: "true",
         msg: "renewed",
         uid,
+        email,
         nombre,
         apellido,
         JWtoken
