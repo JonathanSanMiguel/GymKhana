@@ -38,6 +38,8 @@ const createUser = async(req, res = response) => {
             ok: true,
             msg: "Registro Exitoso",
             uid: dbUser.id,
+            nombre: dbUser.nombre,
+            apellido: dbUser.apellido,
             JWtoken
         });
 
