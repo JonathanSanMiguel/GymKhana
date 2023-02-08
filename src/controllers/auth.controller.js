@@ -44,7 +44,7 @@ const createUser = async(req, res = response) => {
             nombre: dbUser.nombre,
             apellido: dbUser.apellido,
             JWtoken
-        });
+        })
 
       //res en caso de error
     } catch (error) {
@@ -101,7 +101,7 @@ const LogIn = async(req, res = response) => {
             msg: "Something wrong Goes..."
         })
     }
-}//createUser
+}//login
 
 
 //CallBack para validar el JsonToken.
